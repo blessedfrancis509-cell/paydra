@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { UserProfile } from '../types';
 import {
   ShieldCheck,
@@ -15,6 +15,7 @@ import {
   Fingerprint,
   Mail,
   User,
+  ChevronRight,
 } from 'lucide-react';
 
 interface AuthScreenProps {
@@ -29,21 +30,37 @@ const FEATURES = [
     icon: Send,
     title: 'Zero-Fee Transfers',
     desc: 'Send money to any bank in Nigeria with zero charges',
-    color: 'from-amber-400 to-orange-500',
+    gradient: 'from-amber-400 to-orange-500',
+    bg: 'from-amber-900/40 via-orange-900/20 to-transparent',
   },
   {
     icon: TrendingUp,
     title: '15.5% APY Vaults',
     desc: 'Earn daily interest on your savings automatically',
-    color: 'from-emerald-400 to-teal-500',
+    gradient: 'from-emerald-400 to-teal-500',
+    bg: 'from-emerald-900/40 via-teal-900/20 to-transparent',
   },
   {
     icon: CreditCard,
     title: 'Virtual Cards',
     desc: 'Create instant NGN/USD cards with cashback rewards',
-    color: 'from-indigo-400 to-purple-500',
+    gradient: 'from-indigo-400 to-purple-500',
+    bg: 'from-indigo-900/40 via-purple-900/20 to-transparent',
   },
 ];
+
+const Logo = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="48" height="48" rx="12" fill="url(#plogo)" />
+    <path d="M15 34V14H24.5C28 14 31 16.7 31 20.5C31 24.3 28 27 24.5 27H19.5V34H15ZM19.5 22.5H24C25.4 22.5 26.5 21.4 26.5 20C26.5 18.6 25.4 17.5 24 17.5H19.5V22.5Z" fill="white" />
+    <defs>
+      <linearGradient id="plogo" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#6366F1" />
+        <stop offset="1" stopColor="#8B5CF6" />
+      </linearGradient>
+    </defs>
+  </svg>
+);
 
 export const AuthScreen: React.FC<AuthScreenProps> = ({
   onLoginSuccess,
@@ -51,6 +68,8 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
   registeredUsers,
   onRegisterUser,
 }) => {
+  const [phase, setPhase] = useState<'SPLASH' | 'AUTH'>('SPLASH');
+  const [featureIndex, setFeatureIndex] = useState(0);
   const [mode, setMode] = useState<'LOGIN' | 'SIGNUP'>('LOGIN');
 
   const [loginIdentifier, setLoginIdentifier] = useState(defaultUser.email);
@@ -69,13 +88,21 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
   const [agreeTerms, setAgreeTerms] = useState(true);
   const [signupError, setSignupError] = useState('');
 
-  const [activeFeature, setActiveFeature] = useState(0);
-
   useEffect(() => {
+    if (phase !== 'SPLASH') return;
     const timer = setInterval(() => {
-      setActiveFeature((prev) => (prev + 1) % FEATURES.length);
-    }, 4000);
+      setFeatureIndex((prev) => {
+        if (prev >= FEATURES.length - 1) {
+          return prev;
+        }
+        return prev + 1;
+      });
+    }, 2500);
     return () => clearInterval(timer);
+  }, [phase]);
+
+  const enterAuth = useCallback(() => {
+    setPhase('AUTH');
   }, []);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -175,8 +202,89 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
     }, 700);
   };
 
-  const currentFeature = FEATURES[activeFeature];
-  const FeatIcon = currentFeature.icon;
+  const f = FEATURES[featureIndex];
+  const FIcon = f.icon;
+
+  if (phase === 'SPLASH') {
+    return (
+      <div className="min-h-screen w-full bg-slate-950 text-white flex flex-col relative overflow-hidden font-sans">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className={`absolute inset-0 bg-gradient-to-b ${f.bg} transition-all duration-700`} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-white/5" />
+          <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-indigo-500/10 blur-3xl" />
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full bg-purple-500/10 blur-3xl" />
+        </div>
+
+        <div className="relative z-10 flex-1 flex flex-col max-w-md mx-auto w-full px-6">
+          <div className="pt-10 pb-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Logo />
+              <div>
+                <h1 className="text-xl font-black tracking-tight text-white">PAYDRA</h1>
+                <p className="text-[10px] text-indigo-300/60 font-medium -mt-0.5">Digital Banking</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-semibold text-indigo-200">
+              <ShieldCheck className="w-3 h-3 text-emerald-400" />
+              <span>CBN Licensed</span>
+            </div>
+          </div>
+
+          <div className="flex-1 flex flex-col justify-center -mt-12">
+            <div className="relative" key={featureIndex}>
+              <div className={`inline-flex p-3.5 rounded-2xl bg-gradient-to-br ${f.gradient} text-slate-900 mb-5`}>
+                <FIcon className="w-7 h-7" />
+              </div>
+              <h2 className="text-3xl font-black text-white leading-tight mb-3">{f.title}</h2>
+              <p className="text-base text-slate-300 leading-relaxed max-w-xs">{f.desc}</p>
+            </div>
+
+            <div className="flex items-center gap-2 mt-8">
+              {FEATURES.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setFeatureIndex(idx)}
+                  className={`h-2 rounded-full transition-all cursor-pointer ${
+                    idx === featureIndex ? 'w-8 bg-indigo-400' : 'w-2 bg-white/20 hover:bg-white/40'
+                  }`}
+                />
+              ))}
+            </div>
+
+            <div className="mt-10">
+              {featureIndex < FEATURES.length - 1 ? (
+                <button
+                  onClick={() => setFeatureIndex((p) => Math.min(p + 1, FEATURES.length - 1))}
+                  className="w-full py-3.5 bg-white text-slate-900 font-bold rounded-xl text-sm hover:bg-slate-100 transition-all cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <span>Next</span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              ) : (
+                <button
+                  onClick={enterAuth}
+                  className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-indigo-600/30 cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <span>Get Started</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              )}
+              <button
+                onClick={enterAuth}
+                className="w-full mt-2 py-2 text-xs text-slate-400 hover:text-white transition-colors cursor-pointer"
+              >
+                Skip intro
+              </button>
+            </div>
+          </div>
+
+          <footer className="py-6 text-center">
+            <p className="text-[9px] text-slate-500">&copy; {new Date().getFullYear()} Paydra Bank</p>
+          </footer>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-indigo-950 via-slate-900 to-purple-950 text-slate-100 flex flex-col relative overflow-hidden font-sans">
@@ -188,16 +296,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
 
       <header className="relative z-10 max-w-md w-full mx-auto px-5 pt-8 pb-2 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="42" height="42" rx="10" fill="url(#p-logo)" />
-            <path d="M13 30V12H21.5C24.8 12 27.5 14.7 27.5 18C27.5 21.3 24.8 24 21.5 24H17V30H13ZM17 20H21C22.1 20 23 19.1 23 18C23 16.9 22.1 16 21 16H17V20Z" fill="white" />
-            <defs>
-              <linearGradient id="p-logo" x1="0" y1="0" x2="42" y2="42" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#6366F1" />
-                <stop offset="1" stop-color="#8B5CF6" />
-              </linearGradient>
-            </defs>
-          </svg>
+          <Logo />
           <div>
             <h1 className="text-xl font-black tracking-tight text-white">PAYDRA</h1>
             <p className="text-[10px] text-indigo-300/70 font-medium -mt-0.5">Digital Banking</p>
@@ -210,29 +309,6 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
       </header>
 
       <main className="relative z-10 max-w-md w-full mx-auto px-5 py-4 flex-1 flex flex-col gap-5">
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-900/60 via-purple-900/40 to-slate-900/60 border border-white/10 p-4 min-h-[100px]">
-          <div className="flex items-center gap-3">
-            <div className={`p-2.5 rounded-xl bg-gradient-to-br ${currentFeature.color} text-slate-900 shrink-0`}>
-              <FeatIcon className="w-5 h-5" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="text-sm font-bold text-white">{currentFeature.title}</h3>
-              <p className="text-xs text-slate-300 mt-0.5">{currentFeature.desc}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-1.5 mt-3">
-            {FEATURES.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setActiveFeature(idx)}
-                className={`h-1.5 rounded-full transition-all cursor-pointer ${
-                  idx === activeFeature ? 'w-6 bg-indigo-400' : 'w-1.5 bg-white/20 hover:bg-white/40'
-                }`}
-              />
-            ))}
-          </div>
-        </div>
-
         <div className="bg-white rounded-2xl p-5 shadow-xl">
           <div className="flex p-1 bg-slate-100 rounded-xl mb-5">
             <button
@@ -262,9 +338,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
           {mode === 'LOGIN' && (
             <form onSubmit={handleLoginSubmit} className="space-y-3.5">
               <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1">
-                  Email or Phone
-                </label>
+                <label className="text-xs font-semibold text-slate-700 block mb-1">Email or Phone</label>
                 <div className="relative">
                   <input
                     type="text"
