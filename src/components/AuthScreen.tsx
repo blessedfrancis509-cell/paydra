@@ -15,7 +15,6 @@ import {
   Fingerprint,
   Mail,
   User,
-  Wallet,
 } from 'lucide-react';
 
 interface AuthScreenProps {
@@ -189,9 +188,16 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
 
       <header className="relative z-10 max-w-md w-full mx-auto px-5 pt-8 pb-2 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-            <Wallet className="w-5 h-5 text-white" />
-          </div>
+          <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="42" height="42" rx="10" fill="url(#p-logo)" />
+            <path d="M13 30V12H21.5C24.8 12 27.5 14.7 27.5 18C27.5 21.3 24.8 24 21.5 24H17V30H13ZM17 20H21C22.1 20 23 19.1 23 18C23 16.9 22.1 16 21 16H17V20Z" fill="white" />
+            <defs>
+              <linearGradient id="p-logo" x1="0" y1="0" x2="42" y2="42" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#6366F1" />
+                <stop offset="1" stop-color="#8B5CF6" />
+              </linearGradient>
+            </defs>
+          </svg>
           <div>
             <h1 className="text-xl font-black tracking-tight text-white">PAYDRA</h1>
             <p className="text-[10px] text-indigo-300/70 font-medium -mt-0.5">Digital Banking</p>
