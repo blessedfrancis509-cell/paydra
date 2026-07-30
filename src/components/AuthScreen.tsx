@@ -209,21 +209,22 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
   const FIcon = f.icon;
 
   if (phase === 'SPLASH') {
+    const bgStyle = {
+      backgroundImage: `
+        linear-gradient(to top, rgb(2 6 23 / 0.85), rgb(2 6 23 / 0.4) 40%, rgb(2 6 23 / 0.3)),
+        linear-gradient(to bottom, ${featureIndex === 0 ? 'rgb(217 119 6 / 0.35)' : featureIndex === 1 ? 'rgb(5 150 105 / 0.35)' : 'rgb(99 102 241 / 0.35)'}),
+        url(${f.image})
+      `,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    };
+
     return (
       <div className="min-h-screen w-full bg-slate-950 text-white flex flex-col relative overflow-hidden font-sans">
-        <div className="absolute inset-0 transition-all duration-700 pointer-events-none">
-          <img
-            src={f.image}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover scale-105 transition-all duration-700"
-          />
-          <div className="absolute inset-0 bg-slate-950/60" />
-          <div className={`absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent`} />
-          <div className={`absolute inset-0 bg-gradient-to-b ${f.bg} opacity-60`} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-white/10" />
-        </div>
+        <div className="absolute inset-0 transition-all duration-700" style={bgStyle} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-white/10" />
 
-        <div className="relative z-30 flex-1 flex flex-col max-w-md mx-auto w-full px-6">
+        <div className="relative flex-1 flex flex-col max-w-md mx-auto w-full px-6">
           <div className="pt-10 pb-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Logo />
