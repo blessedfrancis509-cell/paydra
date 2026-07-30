@@ -40,7 +40,7 @@ const FEATURES = [
     desc: 'Earn daily interest on your savings automatically',
     gradient: 'from-emerald-400 to-teal-500',
     bg: 'from-emerald-900/40 via-teal-900/20 to-transparent',
-    image: 'https://images.unsplash.com/photo-1559526324-4bc350d242b7?w=600&auto=format&fit=crop',
+    image: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=600&auto=format&fit=crop',
   },
   {
     icon: CreditCard,
