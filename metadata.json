@@ -1,0 +1,6 @@
+{
+  "name": "Paydra Bank",
+  "description": "Next-generation mobile & web digital banking app inspired by Kuda & OPay with premium design, zero-fee instant transfers, virtual cards, vaults, and smart transaction analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
