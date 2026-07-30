@@ -212,16 +212,15 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
     return (
       <div className="min-h-screen w-full bg-slate-950 text-white flex flex-col relative overflow-hidden font-sans">
         <div className="absolute inset-0 transition-all duration-700 pointer-events-none">
-          <div className="absolute inset-0 bg-slate-950/60 z-10" />
           <img
             src={f.image}
             alt=""
             className="absolute inset-0 w-full h-full object-cover scale-105 transition-all duration-700"
-            style={{ animation: 'none' }}
           />
-          <div className={`absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent z-20`} />
-          <div className={`absolute inset-0 bg-gradient-to-b ${f.bg} opacity-60 z-10`} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-white/10 z-10" />
+          <div className="absolute inset-0 bg-slate-950/60" />
+          <div className={`absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent`} />
+          <div className={`absolute inset-0 bg-gradient-to-b ${f.bg} opacity-60`} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-white/10" />
         </div>
 
         <div className="relative z-30 flex-1 flex flex-col max-w-md mx-auto w-full px-6">
