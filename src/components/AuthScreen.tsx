@@ -32,6 +32,7 @@ const FEATURES = [
     desc: 'Send money to any bank in Nigeria with zero charges',
     gradient: 'from-amber-400 to-orange-500',
     bg: 'from-amber-900/40 via-orange-900/20 to-transparent',
+    image: 'https://images.unsplash.com/photo-1607860108855-64acf2078ed9?w=600&auto=format&fit=crop',
   },
   {
     icon: TrendingUp,
@@ -39,6 +40,7 @@ const FEATURES = [
     desc: 'Earn daily interest on your savings automatically',
     gradient: 'from-emerald-400 to-teal-500',
     bg: 'from-emerald-900/40 via-teal-900/20 to-transparent',
+    image: 'https://images.unsplash.com/photo-1559526324-4bc350d242b7?w=600&auto=format&fit=crop',
   },
   {
     icon: CreditCard,
@@ -46,6 +48,7 @@ const FEATURES = [
     desc: 'Create instant NGN/USD cards with cashback rewards',
     gradient: 'from-indigo-400 to-purple-500',
     bg: 'from-indigo-900/40 via-purple-900/20 to-transparent',
+    image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&auto=format&fit=crop',
   },
 ];
 
@@ -208,14 +211,20 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
   if (phase === 'SPLASH') {
     return (
       <div className="min-h-screen w-full bg-slate-950 text-white flex flex-col relative overflow-hidden font-sans">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className={`absolute inset-0 bg-gradient-to-b ${f.bg} transition-all duration-700`} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-white/5" />
-          <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-indigo-500/10 blur-3xl" />
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full bg-purple-500/10 blur-3xl" />
+        <div className="absolute inset-0 transition-all duration-700 pointer-events-none">
+          <div className="absolute inset-0 bg-slate-950/60 z-10" />
+          <img
+            src={f.image}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover scale-105 transition-all duration-700"
+            style={{ animation: 'none' }}
+          />
+          <div className={`absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent z-20`} />
+          <div className={`absolute inset-0 bg-gradient-to-b ${f.bg} opacity-60 z-10`} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-white/10 z-10" />
         </div>
 
-        <div className="relative z-10 flex-1 flex flex-col max-w-md mx-auto w-full px-6">
+        <div className="relative z-30 flex-1 flex flex-col max-w-md mx-auto w-full px-6">
           <div className="pt-10 pb-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Logo />
@@ -232,11 +241,16 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
 
           <div className="flex-1 flex flex-col justify-center -mt-12">
             <div className="relative" key={featureIndex}>
-              <div className={`inline-flex p-3.5 rounded-2xl bg-gradient-to-br ${f.gradient} text-slate-900 mb-5`}>
-                <FIcon className="w-7 h-7" />
+              <div className="flex items-center gap-3 mb-5">
+                <div className={`p-3 rounded-2xl bg-gradient-to-br ${f.gradient} text-slate-900 shadow-lg`}>
+                  <FIcon className="w-6 h-6" />
+                </div>
+                <span className="text-[11px] font-bold uppercase tracking-widest text-indigo-300">
+                  Feature {featureIndex + 1} of 3
+                </span>
               </div>
-              <h2 className="text-3xl font-black text-white leading-tight mb-3">{f.title}</h2>
-              <p className="text-base text-slate-300 leading-relaxed max-w-xs">{f.desc}</p>
+              <h2 className="text-3xl sm:text-4xl font-black text-white leading-tight mb-3">{f.title}</h2>
+              <p className="text-base text-slate-300 leading-relaxed max-w-sm">{f.desc}</p>
             </div>
 
             <div className="flex items-center gap-2 mt-8">
@@ -255,7 +269,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
               {featureIndex < FEATURES.length - 1 ? (
                 <button
                   onClick={() => setFeatureIndex((p) => Math.min(p + 1, FEATURES.length - 1))}
-                  className="w-full py-3.5 bg-white text-slate-900 font-bold rounded-xl text-sm hover:bg-slate-100 transition-all cursor-pointer flex items-center justify-center gap-2"
+                  className="w-full py-3.5 bg-white text-slate-900 font-bold rounded-xl text-sm hover:bg-slate-100 transition-all cursor-pointer flex items-center justify-center gap-2 shadow-xl"
                 >
                   <span>Next</span>
                   <ChevronRight className="w-4 h-4" />
