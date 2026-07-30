@@ -278,7 +278,7 @@ export const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({
             {/* Utility Bills Section */}
               {utilityTxs.length > 0 && (
                 <div className="p-5 sm:p-6 border-b border-slate-100">
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-amber-500" />
                       <h4 className="text-xs font-black text-slate-900 uppercase tracking-wide">Utility Bills & Services</h4>
@@ -287,26 +287,48 @@ export const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({
                       ₦{totalUtilitySpent.toLocaleString()}
                     </span>
                   </div>
-                  <div className="space-y-2 max-h-[40vh] overflow-y-auto custom-scrollbar pr-1">
-                    {utilityTxs.map((tx) => (
+                  <div className="space-y-1.5">
+                    {utilityTxs.slice(0, 5).map((tx) => (
                       <div
                         key={tx.id}
-                        className="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-slate-100"
+                        className="flex items-center justify-between p-2 bg-slate-50 rounded-xl border border-slate-100"
                       >
-                        <div className="flex items-center gap-2.5 min-w-0">
-                          <div className={`w-7 h-7 rounded-xl flex items-center justify-center font-bold shrink-0 ${
+                        <div className="flex items-center gap-2 min-w-0">
+                          <div className={`w-6 h-6 rounded-lg flex items-center justify-center font-bold shrink-0 ${
                             tx.type === 'AIRTIME' || tx.type === 'DATA'
                               ? 'bg-amber-50 text-amber-600 border border-amber-200'
                               : 'bg-indigo-50 text-indigo-600 border border-indigo-200'
                           }`}>
                             {tx.type === 'AIRTIME' || tx.type === 'DATA' ? (
-                              <span className="text-[10px]">📱</span>
+                              <span className="text-[9px]">📱</span>
                             ) : (
-                              <span className="text-[10px]">⚡</span>
+                              <span className="text-[9px]">⚡</span>
                             )}
                           </div>
                           <div className="min-w-0">
-                            <span className="text-xs font-bold text-slate-900 block truncate">{tx.title}</span>
+                            <span className="text-[11px] font-bold text-slate-900 block truncate">{tx.title}</span>
+                            <span className="text-[9px] text-slate-400">{tx.date} &bull; {tx.time}</span>
+                          </div>
+                        </div>
+                        <div className="text-right shrink-0 ml-2">
+                          <span className="text-[11px] font-black text-slate-900 block">-₦{tx.amount.toLocaleString()}</span>
+                          {tx.cashbackEarned && (
+                            <span className="text-[8px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100 inline-block mt-0.5">
+                              +₦{tx.cashbackEarned} Cashback
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                    {utilityTxs.length > 5 && (
+                      <div className="p-2 text-center text-[10px] text-slate-500 bg-slate-50 rounded-xl border border-slate-100">
+                        +{utilityTxs.length - 5} more utilities &nbsp;
+                        <span className="font-bold text-indigo-600">View All</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
                             <span className="text-[10px] text-slate-400">{tx.date} &bull; {tx.time}</span>
                           </div>
                         </div>
