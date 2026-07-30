@@ -328,23 +328,7 @@ export const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({
                     )}
                   </div>
                 </div>
-              )}
-                            <span className="text-[10px] text-slate-400">{tx.date} &bull; {tx.time}</span>
-                          </div>
-                        </div>
-                        <div className="text-right shrink-0 ml-2">
-                          <span className="text-xs font-black text-slate-900 block">-₦{tx.amount.toLocaleString()}</span>
-                          {tx.cashbackEarned && (
-                            <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100 inline-block mt-0.5">
-                              +₦{tx.cashbackEarned} Cashback
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+)}
 
             {/* Top Beneficiaries Section */}
             <div className="bg-white rounded-3xl border border-slate-200 shadow-xs p-5 sm:p-6">
