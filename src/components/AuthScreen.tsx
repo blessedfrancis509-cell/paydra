@@ -32,7 +32,8 @@ const FEATURES = [
     desc: 'Send money to any bank in Nigeria with zero charges',
     gradient: 'from-amber-400 to-orange-500',
     bg: 'from-amber-900/40 via-orange-900/20 to-transparent',
-    image: 'https://images.unsplash.com/photo-1607860108855-64acf2078ed9?w=600&auto=format&fit=crop',
+    solidBg: '#1c1917',
+    image: 'https://images.unsplash.com/photo-1607860108855-64acf2078ed9?w=400&auto=format&fit=crop',
   },
   {
     icon: TrendingUp,
@@ -40,7 +41,8 @@ const FEATURES = [
     desc: 'Earn daily interest on your savings automatically',
     gradient: 'from-emerald-400 to-teal-500',
     bg: 'from-emerald-900/40 via-teal-900/20 to-transparent',
-    image: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=600&auto=format&fit=crop',
+    solidBg: '#022c22',
+    image: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=400&auto=format&fit=crop',
   },
   {
     icon: CreditCard,
@@ -48,7 +50,8 @@ const FEATURES = [
     desc: 'Create instant NGN/USD cards with cashback rewards',
     gradient: 'from-indigo-400 to-purple-500',
     bg: 'from-indigo-900/40 via-purple-900/20 to-transparent',
-    image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&auto=format&fit=crop',
+    solidBg: '#1e1b4b',
+    image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&auto=format&fit=crop',
   },
 ];
 
@@ -210,6 +213,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
 
   if (phase === 'SPLASH') {
     const bgStyle = {
+      backgroundColor: f.solidBg,
       backgroundImage: `
         linear-gradient(to top, rgb(2 6 23 / 0.85), rgb(2 6 23 / 0.4) 40%, rgb(2 6 23 / 0.3)),
         linear-gradient(to bottom, ${featureIndex === 0 ? 'rgb(217 119 6 / 0.35)' : featureIndex === 1 ? 'rgb(5 150 105 / 0.35)' : 'rgb(99 102 241 / 0.35)'}),
