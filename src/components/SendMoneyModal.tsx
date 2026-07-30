@@ -21,7 +21,7 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
   onCompleteTransfer,
   prefilledBeneficiary,
 }) => {
-  const [step, setStep] = useState<'DESTINATION' | 'DETAILS' | 'PIN' | 'SUCCESS'>('DESTINATION');
+  const [step, setStep] = useState<'DESTINATION' | 'DETAILS' | 'PIN' | 'PROCESSING' | 'SUCCESS'>('DESTINATION');
   const [transferType, setTransferType] = useState<'BANK' | 'PAYDRA'>('BANK');
 
   // Input States
@@ -39,6 +39,7 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
 
   // Completed Tx Ref
   const [createdTx, setCreatedTx] = useState<Transaction | null>(null);
+  const [processingStep, setProcessingStep] = useState(0);
 
   useEffect(() => {
     if (prefilledBeneficiary) {
@@ -49,6 +50,15 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
       setStep('DETAILS');
     }
   }, [prefilledBeneficiary]);
+
+  useEffect(() => {
+    if (step !== 'PROCESSING') return;
+    setProcessingStep(0);
+    const interval = setInterval(() => {
+      setProcessingStep(prev => Math.min(prev + 1, 4));
+    }, 400);
+    return () => clearInterval(interval);
+  }, [step]);
 
   // Account Lookup Simulator
   useEffect(() => {
@@ -141,34 +151,39 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
   };
 
   const executeTransfer = (finalPin: string[]) => {
-    const newTx: Transaction = {
-      id: `tx_${Date.now()}`,
-      reference: `PAYDRA-${new Date().toISOString().slice(0,10).replace(/-/g,'')}-${Math.floor(10000 + Math.random() * 90000)}`,
-      type: 'TRANSFER',
-      title: `Transfer to ${verifiedName || accountNumber}`,
-      amount: numericAmount,
-      currency: 'NGN',
-      fee: 0,
-      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      status: 'SUCCESSFUL',
-      recipientName: verifiedName || 'Verified Recipient',
-      recipientAccount: accountNumber,
-      bankName: selectedBank.name,
-      senderName: 'Tunde Adebayo',
-      senderAccount: '2084920193',
-      senderBank: 'Paydra Bank',
-      category: category,
-      note: note,
-      tag: aiAnalysis?.suggestedTag || '#ZeroFeeTransfer',
-      cashbackEarned: aiAnalysis?.cashbackEarned || 20,
-      receiptCode: `RCP-${Math.floor(1000000 + Math.random() * 9000000)}`,
-    };
+    setProcessingStep(0);
+    setStep('PROCESSING');
 
-    setCreatedTx(newTx);
-    onCompleteTransfer(newTx);
-    triggerSuccessConfetti();
-    setStep('SUCCESS');
+    setTimeout(() => {
+      const newTx: Transaction = {
+        id: `tx_${Date.now()}`,
+        reference: `PAYDRA-${new Date().toISOString().slice(0,10).replace(/-/g,'')}-${Math.floor(10000 + Math.random() * 90000)}`,
+        type: 'TRANSFER',
+        title: `Transfer to ${verifiedName || accountNumber}`,
+        amount: numericAmount,
+        currency: 'NGN',
+        fee: 0,
+        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        status: 'SUCCESSFUL',
+        recipientName: verifiedName || 'Verified Recipient',
+        recipientAccount: accountNumber,
+        bankName: selectedBank.name,
+        senderName: 'Tunde Adebayo',
+        senderAccount: '2084920193',
+        senderBank: 'Paydra Bank',
+        category: category,
+        note: note,
+        tag: aiAnalysis?.suggestedTag || '#ZeroFeeTransfer',
+        cashbackEarned: aiAnalysis?.cashbackEarned || 20,
+        receiptCode: `RCP-${Math.floor(1000000 + Math.random() * 9000000)}`,
+      };
+
+      setCreatedTx(newTx);
+      onCompleteTransfer(newTx);
+      triggerSuccessConfetti();
+      setStep('SUCCESS');
+    }, 1800);
   };
 
   const handleResetModal = () => {
@@ -178,6 +193,7 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
     setNote('');
     setPin(['', '', '', '']);
     setVerifiedName('');
+    setProcessingStep(0);
     onClose();
   };
 
@@ -487,7 +503,59 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
           </div>
         )}
 
-        {/* STEP 4: SUCCESS CELEBRATION */}
+        {/* STEP 4: PROCESSING */}
+        {step === 'PROCESSING' && (
+          <div className="py-10 text-center space-y-6 animate-fade-in">
+            <div className="relative mx-auto w-20 h-20">
+              <div className="absolute inset-0 rounded-full border-4 border-indigo-100" />
+              <div className="absolute inset-0 rounded-full border-4 border-indigo-600 border-t-transparent animate-spin" />
+            </div>
+
+            <div>
+              <h3 className="text-lg font-black text-slate-900">Processing Transfer</h3>
+              <p className="text-xs text-slate-500 mt-1">
+                Sending ₦{numericAmount.toLocaleString()} to <strong className="text-indigo-600">{verifiedName || accountNumber}</strong>
+              </p>
+            </div>
+
+            <div className="max-w-[220px] mx-auto space-y-2.5">
+              {[
+                { label: 'Verifying PIN' },
+                { label: 'Fraud Check' },
+                { label: 'Processing Payment' },
+                { label: 'Finalizing' },
+              ].map((item, idx) => (
+                <div key={item.label} className="flex items-center gap-2.5 text-xs">
+                  <div className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${
+                    processingStep > idx
+                      ? 'bg-emerald-500 text-white'
+                      : processingStep === idx
+                        ? 'bg-indigo-600 text-white animate-pulse'
+                        : 'bg-slate-100 text-slate-300'
+                  }`}>
+                    {processingStep > idx ? (
+                      <span className="text-[8px] font-black">{'✓'}</span>
+                    ) : processingStep === idx ? (
+                      <div className="w-2 h-2 rounded-full bg-white animate-ping" />
+                    ) : (
+                      <div className="w-1.5 h-1.5 rounded-full bg-slate-300" />
+                    )}
+                  </div>
+                  <span className={`font-medium ${
+                    processingStep > idx ? 'text-emerald-600' : processingStep === idx ? 'text-slate-900' : 'text-slate-400'
+                  }`}>{item.label}</span>
+                </div>
+              ))}
+            </div>
+
+            <p className="text-[10px] text-slate-400 flex items-center justify-center gap-1">
+              <Lock className="w-3 h-3" />
+              Secured by Paydra Encryption
+            </p>
+          </div>
+        )}
+
+        {/* STEP 5: SUCCESS CELEBRATION */}
         {step === 'SUCCESS' && createdTx && (
           <div className="py-6 text-center space-y-4 animate-fade-in">
             <div className="w-16 h-16 rounded-full bg-indigo-50 border-4 border-indigo-600 text-indigo-600 mx-auto flex items-center justify-center font-black text-2xl shadow-xl shadow-indigo-600/30 animate-bounce">
